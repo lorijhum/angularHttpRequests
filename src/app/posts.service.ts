@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Post } from './post.model';
-import { map } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
 
 export class PostsService{
     error = new Subject<string>();
@@ -35,6 +35,11 @@ export class PostsService{
         }
        }
        return postsArray;
+    }),
+    //this doesn't do anything right now, we are just learning that we can use catchError as another way to handle errors
+    catchError(errorRes => {
+        //send error to your own method to track errors
+        return throwError(errorRes)
     })
     );
    
