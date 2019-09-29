@@ -56,11 +56,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
     }, error => {
      // this.error = error.message;
+     this.isFetching = false;
      this.error =  error.statusText;
       console.log(error);
       console.log('this error is ' + error.statusText)
       
     });
+  }
+  onHandleError() {
+    this.error = null;
   }
 
  
