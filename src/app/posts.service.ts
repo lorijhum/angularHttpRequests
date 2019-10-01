@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpEventType } from '@angular/common/http';
 import { Post } from './post.model';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 
 export class PostsService{
@@ -17,6 +17,27 @@ export class PostsService{
         )
         .subscribe(responseData => {
           console.log(responseData);
+        }, error => {
+            this.error.next(error.message);
+        });
+
+    }
+
+    createAndStorePost2(title: string, content: string) {
+        //adding observe to the post. with reponse to get entire response, not just the body
+        //logging entire response to console not just the body
+        const postData: Post = {title: title, content: content}
+        this.http
+        .post<{ name: string }>(
+          'https://ng-complete-guide-c111d.firebaseio.com/posts.json',
+          postData,
+          {
+              observe: 'response'
+          }
+        )
+        .subscribe(responseData => {
+          console.log(responseData);
+          
         }, error => {
             this.error.next(error.message);
         });
@@ -56,5 +77,23 @@ export class PostsService{
     deletePosts() {
             return this.http.delete('https://ng-complete-guide-c111d.firebaseio.com/posts.json')
              
+        }
+
+        deletePosts2() {
+            return this.http.delete(
+                'https://ng-complete-guide-c111d.firebaseio.com/posts.json',
+                {
+                    observe: 'events',
+                    responseType: 'text'
+                }           
+                )
+                .pipe(
+                    tap(event => {
+                      console.log(event);
+                      if(event.type === HttpEventType.Response) {
+                          console.log(event.body);
+                      }
+                    })
+                );
         }
     }

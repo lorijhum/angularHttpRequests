@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Post } from './post.model';
 import { PostsService } from './posts.service';
 import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onCreatePost(postData: Post) {
     // Send Http request
-    this.postsService.createAndStorePost(postData.title, postData.content);
+    this.postsService.createAndStorePost2(postData.title, postData.content);
    
   }
 
@@ -42,9 +43,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onClearPosts() {
     // Send Http request
-    this.postsService.deletePosts().subscribe(() => {
+    this.postsService.deletePosts2().subscribe(() => {
       this.loadedPosts = [];
-    });
+    })
+        
   }
 
 
